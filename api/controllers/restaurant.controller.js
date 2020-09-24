@@ -6,7 +6,10 @@ const Restaurant = require("../../models/Restaurant");
 // @access  Public
 exports.index = async (req, res, next) => {
   try {
-    const restaurants = await Restaurant.find();
+    const restaurants = await Restaurant.find().populate({
+      path: "meal",
+      select: "name cuisineType price",
+    });
     return res.status(200).json({
       success: true,
       count: restaurants.length === 0 ? 0 : restaurants.length,
@@ -25,7 +28,7 @@ exports.index = async (req, res, next) => {
 exports.single = async (req, res, next) => {
   try {
     const _id = req.params.restaurantId;
-    const restaurant = await Restaurant.findById({ _id });
+    const restaurant = await Restaurant.findById({ _id }).populate("meal");
 
     return res.status(200).json({ success: true, restaurant });
   } catch (error) {
@@ -59,7 +62,6 @@ exports.create = async (req, res, next) => {
     const restaurant = await Restaurant.create(newRestaurant);
     return res.status(201).json({ success: true, restaurant });
   } catch (err) {
-    console.log("error=====", err);
     return res.status(400).json({
       success: false,
       message: "Sorry, could not create a restaurant",

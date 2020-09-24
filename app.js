@@ -10,6 +10,7 @@ require("dotenv").config();
 const connectDB = require("./config/db");
 const authRoutes = require("./api/routes/auth");
 const restaurantRoutes = require("./api/routes/restaurant");
+const mealRoutes = require("./api/routes/meal");
 
 // Middleware Configs
 app.use(logger("dev"));
@@ -27,5 +28,6 @@ connectDB();
 */
 app.use("/api/v1/auth/user", authRoutes);
 app.use("/api/v1/restaurants", restaurantRoutes);
+app.use("/api/v1/meals", mealRoutes);
 
 module.exports = app;

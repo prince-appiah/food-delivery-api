@@ -8,12 +8,12 @@ const {
   single,
   remove,
   update,
-} = require("../controllers/restaurant.controller");
+} = require("../controllers/meal.controller");
 
 router.get("/", index);
 router.post("/add", protect, create);
-router.get("/:restaurantId", single);
-router.delete("/:restaurantId", protect, remove);
-router.put("/:restaurantId", protect, update);
+router.get("/:mealId", single);
+router.delete("/:mealId", protect, remove);
+router.put("/:mealId", protect, update);
 
 module.exports = router;

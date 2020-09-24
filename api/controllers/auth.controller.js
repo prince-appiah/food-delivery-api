@@ -57,6 +57,34 @@ exports.login = async (req, res, next) => {
   sendTokenResponse(customer, 200, res);
 };
 
+// @route   GET /api/v1/auth/me
+// @desc    Get logged in user
+// @access  Private
+exports.me = async (req, res, next) => {
+  // console.log(req.user);
+  const user = await User.findById(req.user._id);
+  res.status(200).json({ success: true, data: user });
+};
+
+// @route   GET /api/v1/auth/logout
+// @desc    Log out user
+// @access  Private
+exports.logout = (req, res) => {
+  try {
+    return (
+      res
+        .cookie("token", "", { maxAge: 1 })
+        // .redirect("/")
+        .status(200)
+        .json({ success: true })
+    );
+  } catch (error) {
+    console.log(error);
+  }
+  // res.redirect("/");
+  // console.log(res.cookie);
+};
+
 const sendTokenResponse = (user, statusCode, res) => {
   // create token
   const token = user.getJWT();
@@ -66,11 +94,12 @@ const sendTokenResponse = (user, statusCode, res) => {
       Date.now() + JWT_COOKIE_EXPIRE_TIME * 24 * 60 * 60 * 1000
     ),
     httpOnly: true,
+    secure: NODE_ENV === "production" ? true : false,
   };
 
-  if (NODE_ENV === "production") {
-    options.secure = true;
-  }
+  // if (NODE_ENV === "production") {
+  //   options.secure = true;
+  // }
 
   res
     .status(statusCode)

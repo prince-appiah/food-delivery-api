@@ -30,6 +30,12 @@ const RestaurantSchema = Schema(
       max: [5, "Rating must not exceed 5"],
       required: true,
     },
+    menu: [
+      {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: "meal",
+      },
+    ],
 
     // menu - should house a list of dishes ('ref')
   },
