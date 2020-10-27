@@ -1,22 +1,27 @@
+const slugify = require("slugify");
+const { v4: uuidv4 } = require("uuid");
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const RestaurantSchema = Schema(
   {
+    // _id: uuidv4(),
     slug: { type: String },
     name: {
       type: String,
       trim: true,
-      unique: true,
-      required: [true, "Restaurant must have name"],
-      maxLength: [50, "Name cannot be more than 50 characters"],
+      unique: [true, "Two or more restaurants cannot have the same name"],
+      required: [true, "Restaurant must have a name"],
+      maxlength: [50, "Name cannot be more than 50 characters"],
     },
     address: {
       type: String,
+      trim: true,
       required: [true, "Address is required"],
     },
     city: {
       type: String,
+      trim: true,
       required: [true, "City is required"],
     },
     status: {
@@ -30,21 +35,28 @@ const RestaurantSchema = Schema(
       max: [5, "Rating must not exceed 5"],
       required: true,
     },
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
+    },
     menu: [
       {
-        type: mongoose.SchemaTypes.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "meal",
       },
     ],
-
-    // menu - should house a list of dishes ('ref')
   },
   { timestamps: true }
 );
 
-// Sign JWT amd return user
-// RestaurantSchema.methods.getJWT = function () {
-//   return jwt.sign({ id: this._id }, JWT_TOKEN, { expiresIn: JWT_EXPIRE_TIME });
-// };
+RestaurantSchema.pre("save", function (next) {
+  this.slug = slugify(this.name, { lower: true });
+  next();
+});
+
+RestaurantSchema.pre("findOneAndUpdate", function (next) {
+  this._update.slug = slugify(String(this._update.name), { lower: true });
+  next();
+});
 
 module.exports = mongoose.model("restaurant", RestaurantSchema);

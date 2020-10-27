@@ -1,8 +1,9 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-
+const slugify = require("slugify");
 const MealSchema = Schema(
   {
+    slug: { type: String },
     name: {
       type: String,
       trim: true,
@@ -21,16 +22,22 @@ const MealSchema = Schema(
     //   enum: ["confirmed", "en route", "delivered", "canceled"],
     // },
     restaurant: {
-      type: mongoose.SchemaTypes.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "restaurant",
+      // required: true,
     },
   },
   { timestamps: true }
 );
 
-// Sign JWT amd return user
-// MealSchema.methods.getJWT = function () {
-//   return jwt.sign({ id: this._id }, JWT_TOKEN, { expiresIn: JWT_EXPIRE_TIME });
-// };
+MealSchema.pre("save", function (next) {
+  this.slug = slugify(this.name, { lower: true });
+  next();
+});
+
+MealSchema.pre("findOneAndUpdate", function (next) {
+  this._update.slug = slugify(String(this._update.name), { lower: true });
+  next();
+});
 
 module.exports = mongoose.model("meal", MealSchema);

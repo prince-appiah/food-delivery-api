@@ -1,7 +1,7 @@
 const express = require("express");
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
-const { protect } = require("../../config/auth");
+const { protect, authorize } = require("../../config/auth");
 const {
   create,
   index,
@@ -10,10 +10,11 @@ const {
   update,
 } = require("../controllers/meal.controller");
 
-router.get("/", index);
-router.post("/add", protect, create);
-router.get("/:mealId", single);
-router.delete("/:mealId", protect, remove);
-router.put("/:mealId", protect, update);
+router.route("/").get(index).post(protect, authorize("owner"), create);
+router
+  .route("/:mealId")
+  .get(single)
+  .put(protect, authorize("owner"), update)
+  .delete(protect, authorize("owner"), remove);
 
 module.exports = router;

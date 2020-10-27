@@ -1,7 +1,10 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const bcrypt = require("bcryptjs");
+// const { v4: uuidv4 } = require("uuid");
 const jwt = require("jsonwebtoken");
+const { isEmail } = require("validator");
+
 const { JWT_TOKEN, JWT_EXPIRE_TIME } = require("../config/settings");
 
 const UserSchema = Schema(
@@ -19,16 +22,13 @@ const UserSchema = Schema(
       type: String,
       unique: true,
       lowercase: true,
-      match: [
-        /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-        "Please enter a valid email",
-      ],
+      validate: [isEmail, "Please enter a valid email"],
       required: [true, "Please enter your email"],
     },
     password: {
       type: String,
       required: [true, "Password is required"],
-      minLength: [6, "Password should be at least 6 characters long"],
+      minlength: [6, "Password should be at least 6 characters long"],
       select: false,
     },
     role: {

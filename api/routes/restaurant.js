@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const { protect } = require("../../config/auth");
+const { protect, authorize } = require("../../config/auth");
 const {
   create,
   index,
@@ -10,10 +10,17 @@ const {
   update,
 } = require("../controllers/restaurant.controller");
 
-router.get("/", index);
-router.post("/add", protect, create);
-router.get("/:restaurantId", single);
-router.delete("/:restaurantId", protect, remove);
-router.put("/:restaurantId", protect, update);
+const courseRouter = require("../routes/meal");
+const ratingRouter = require("../routes/ratings");
+
+router.use("/:restaurantId/meals", courseRouter);
+router.use("/:restaurantId/ratings", ratingRouter);
+
+router.route("/").get(index).post(protect, authorize("owner"), create);
+router
+  .route("/:restaurantId")
+  .get(single)
+  .put(protect, authorize("owner"), update)
+  .delete(protect, authorize("owner"), remove);
 
 module.exports = router;

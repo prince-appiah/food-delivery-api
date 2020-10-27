@@ -16,7 +16,6 @@ const conn = server.listen(settings.PORT, () =>
   )
 );
 
-// Handle promise rejections
 process.on("unhandledRejection", (err, promise) => {
   console.log(`Error: ${err.message}`);
   //close server and exit

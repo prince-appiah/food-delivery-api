@@ -1,24 +1,31 @@
-const { JWT_COOKIE_EXPIRE_TIME, NODE_ENV } = require("../../config/settings");
 const Restaurant = require("../../models/Restaurant");
+const { successHandler } = require("../utils");
+const {
+  findAll,
+  findItemById,
+  updateItem,
+  createItem,
+  removeItem,
+} = require("../../models/queries");
 
-// @route   GET /api/v1/restaurants/
-// @desc    List all restaurants
-// @access  Public
+/**
+ * @route   GET /api/v1/restaurants/
+ * @desc    List all restaurants
+ * @access  Public
+ * */
 exports.index = async (req, res, next) => {
   try {
-    const restaurants = await Restaurant.find().populate({
-      path: "meal",
-      select: "name cuisineType price",
-    });
-    return res.status(200).json({
-      success: true,
-      count: restaurants.length === 0 ? 0 : restaurants.length,
-      restaurants,
-    });
+    const populate = [
+      { path: "owner", select: "name address contact" },
+      { path: "menu", select: "name cuisineType price" },
+    ];
+
+    const restaurants = await findAll(req, Restaurant, populate);
+    return successHandler(res, 200, restaurants);
   } catch (error) {
-    return res
-      .status(400)
-      .json({ success: false, message: "Could not fetch restaurants" });
+    // @TODO use custom mongoose error handler here
+    console.log(error);
+    // return res.status(400).json({ success: false, message: error });
   }
 };
 
@@ -28,13 +35,18 @@ exports.index = async (req, res, next) => {
 exports.single = async (req, res, next) => {
   try {
     const _id = req.params.restaurantId;
-    const restaurant = await Restaurant.findById({ _id }).populate("meal");
+    const populate = [
+      { path: "meal" },
+      { path: "owner", select: "name address contact email" },
+    ];
 
-    return res.status(200).json({ success: true, restaurant });
-  } catch (error) {
-    return res
-      .status(404)
-      .json({ success: false, message: "Restaurant does not exist" });
+    const restaurant = await findItemById(res, Restaurant, _id, populate);
+
+    return successHandler(res, 200, restaurant);
+  } catch (err) {
+    // @TODO use mongoose error handlers here
+    // handleError(err);
+    console.log(err);
   }
 
   //
@@ -44,68 +56,56 @@ exports.single = async (req, res, next) => {
 // @desc    Create restaurant
 // @access  Private
 exports.create = async (req, res, next) => {
-  const newRestaurant = { ...req.body };
-
-  // check existing restaurant - by name
-  const existingRestaurant = await Restaurant.findOne({
-    name: newRestaurant.name,
-  });
-
-  if (existingRestaurant) {
-    return res.status(400).json({
-      success: false,
-      message: `${existingRestaurant.name} already exists.`,
-    });
-  }
-
   try {
-    const restaurant = await Restaurant.create(newRestaurant);
-    return res.status(201).json({ success: true, restaurant });
+    const newRestaurant = { ...req.body };
+    const restaurant = await createItem(res, Restaurant, newRestaurant);
+
+    return successHandler(res, 201, restaurant);
   } catch (err) {
-    return res.status(400).json({
-      success: false,
-      message: "Sorry, could not create a restaurant",
-    });
+    // @TODO use custom mongoose error handlers
+    console.log(err);
   }
 };
 
-// @route   DELETE /api/v1/restaurants/:restaurantId
-// @desc    Delete restaurant by id
-// @access  Private
+/**
+ * @route   DELETE /api/v1/restaurants/:restaurantId
+ * @desc    Delete restaurant by id
+ * @access  Private
+ * */
 exports.remove = async (req, res, next) => {
   try {
     const _id = req.params.restaurantId;
-    const restaurant = await Restaurant.findByIdAndRemove(_id);
-    // console.log(restaurant);
-    return res.status(200).json({
-      success: true,
-      message: `${restaurant.name} deleted`,
-    });
-  } catch (error) {
+    const restaurant = await removeItem(res, Restaurant, _id);
+
     return res
-      .status(404)
-      .json({ success: false, message: "Restaurant does not exist" });
+      .status(200)
+      .json({ success: true, message: `${restaurant.name} deleted` });
+  } catch (error) {
+    // @TODO use custom mongoose error handling
+    console.log(error);
   }
 };
 
-// @route   PUT /api/v1/restaurants/:restaurantId
-// @desc    Update restaurant by id
-// @access  Private
+/**
+ * @route   PUT /api/v1/restaurants/:restaurantId
+ * @desc    Update restaurant by id
+ * @access  Private
+ * */
 exports.update = async (req, res, next) => {
   try {
     const _id = req.params.restaurantId;
-    const restaurant = await Restaurant.findByIdAndUpdate(_id, req.body, {
-      new: true,
-    });
-    // console.log(restaurant);
+    const body = { ...req.body };
+    const restaurant = await updateItem(res, Restaurant, _id, body);
+
+    if (!restaurant) {
+      return res.status(400).json({ success: false });
+    }
     return res.status(201).json({
       success: true,
       message: "Update successful",
       restaurant,
     });
   } catch (error) {
-    return res
-      .status(404)
-      .json({ success: false, message: "Restaurant does not exist" });
+    console.log(error);
   }
 };

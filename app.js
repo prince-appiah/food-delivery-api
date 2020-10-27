@@ -17,6 +17,7 @@ const connectDB = require("./config/db");
 const authRoutes = require("./api/routes/auth");
 const restaurantRoutes = require("./api/routes/restaurant");
 const mealRoutes = require("./api/routes/meal");
+const ratingsRoutes = require("./api/routes/ratings");
 
 // Middleware Configs
 app.use(logger("dev"));
@@ -25,16 +26,16 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 app.use(cookieParser());
 app.use(mongoSanitize());
-app.use(helmet()); // set security headers
-app.use(xss()); // prevent cross site scripting attacks
-app.use(hpp()); // prevent http pollution
+app.use(helmet());
+app.use(xss());
+app.use(hpp());
 const limiter = rateLimiter({
-  windowMs: 10 * 60 * 1000, // 10 minutes
+  // 10 minutes
+  windowMs: 10 * 60 * 1000,
   maxAge: 1,
 });
 app.use(limiter);
 
-// Connect database
 connectDB();
 
 /* 
@@ -45,5 +46,6 @@ connectDB();
 app.use("/api/v1/auth/user", authRoutes);
 app.use("/api/v1/restaurants", restaurantRoutes);
 app.use("/api/v1/meals", mealRoutes);
+app.use("/api/v1/ratings", ratingsRoutes);
 
 module.exports = app;
