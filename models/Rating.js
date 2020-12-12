@@ -3,11 +3,11 @@ const Schema = mongoose.Schema;
 
 const RatingSchema = Schema(
   {
-    title: {
+    name: {
       type: String,
       trim: true,
       maxlength: 100,
-      required: [true, "Please add a title"],
+      required: [true, "Please add a name for your review"],
     },
     text: {
       type: String,

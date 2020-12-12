@@ -13,7 +13,7 @@ const {
  * @desc    List all restaurants
  * @access  Public
  * */
-exports.index = async (req, res, next) => {
+exports.index = async (req, res) => {
   try {
     const populate = [
       { path: "owner", select: "name address contact" },
@@ -32,7 +32,7 @@ exports.index = async (req, res, next) => {
 // @route   GET /api/v1/restaurants/:restaurantId
 // @desc    Get single restaurant by id
 // @access  Public
-exports.single = async (req, res, next) => {
+exports.single = async (req, res) => {
   try {
     const _id = req.params.restaurantId;
     const populate = [
@@ -52,10 +52,12 @@ exports.single = async (req, res, next) => {
   //
 };
 
-// @route   POST /api/v1/restaurants/add
-// @desc    Create restaurant
-// @access  Private
-exports.create = async (req, res, next) => {
+/**
+ * @route   POST /api/v1/restaurants/add
+ * @desc    Create restaurant
+ * @access  Private
+ * */
+exports.create = async (req, res) => {
   try {
     const newRestaurant = { ...req.body };
     const restaurant = await createItem(res, Restaurant, newRestaurant);
@@ -72,7 +74,7 @@ exports.create = async (req, res, next) => {
  * @desc    Delete restaurant by id
  * @access  Private
  * */
-exports.remove = async (req, res, next) => {
+exports.remove = async (req, res) => {
   try {
     const _id = req.params.restaurantId;
     const restaurant = await removeItem(res, Restaurant, _id);
@@ -91,7 +93,7 @@ exports.remove = async (req, res, next) => {
  * @desc    Update restaurant by id
  * @access  Private
  * */
-exports.update = async (req, res, next) => {
+exports.update = async (req, res) => {
   try {
     const _id = req.params.restaurantId;
     const body = { ...req.body };

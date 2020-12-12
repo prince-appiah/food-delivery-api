@@ -10,10 +10,10 @@ const {
   update,
 } = require("../controllers/restaurant.controller");
 
-const courseRouter = require("../routes/meal");
-const ratingRouter = require("../routes/ratings");
+const mealRouter = require("./meal");
+const ratingRouter = require("./rating");
 
-router.use("/:restaurantId/meals", courseRouter);
+router.use("/:restaurantId/meals", mealRouter);
 router.use("/:restaurantId/ratings", ratingRouter);
 
 router.route("/").get(index).post(protect, authorize("owner"), create);

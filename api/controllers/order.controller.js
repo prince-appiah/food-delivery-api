@@ -1,5 +1,4 @@
-const Restaurant = require("../../models/Restaurant");
-const Rating = require("../../models/Rating");
+const Order = require("../../models/Order");
 const { successHandler } = require("../utils");
 const {
   findAll,
@@ -10,8 +9,8 @@ const {
 } = require("../../models/queries");
 
 /**
- * @route   GET /api/v1/ratings
- * @route   GET /api/v1/restaurants/:restaurantId/ratings
+ * @route   GET /api/v1/orders
+ * @route   GET /api/v1/orders/:restaurantId/ratings
  * @desc    List all ratings / restaurant's ratings
  * @access  Public
  * */
@@ -54,28 +53,28 @@ exports.single = async (req, res, next) => {
 };
 
 /**
- * @route   POST /api/v1/restaurants/:restaurantId/ratings
- * @desc    Add a rating
+ * @route   POST /api/v1/:userId/orders
+ * @desc    Add an order
  * @access  Private
  **/
 exports.create = async (req, res, next) => {
   try {
-    req.body.restaurant = req.params.restaurantId;
+    // req.body.restaurant = req.params.restaurantId;
     req.body.user = req.user._id;
     const body = { ...req.body };
-    const _id = req.params.restaurantId;
+    const _id = req.params.userId;
 
-    const restaurant = await findItemById(res, Restaurant, _id);
+    const existingOrder = await findItemById(res, Order, _id);
 
-    if (!restaurant) {
+    if (!existingOrder) {
       return res
-        .status(404)
-        .json({ success: false, message: "Restaurant does not exist" });
+        .status(404)                                           
+        .json({ success: false, message: "Order does not exist" });
     }
 
-    const rating = await createItem(res, Rating, body);
+    const order = await createItem(res, Order, body);
 
-    return successHandler(res, 201, rating);
+    return successHandler(res, 201, order);
   } catch (error) {
     console.log(error);
   }

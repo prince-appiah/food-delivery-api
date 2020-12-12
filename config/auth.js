@@ -44,11 +44,8 @@ exports.protect = async (req, res, next) => {
   }
 
   try {
-    // verify token
     const decoded = jwt.verify(token, JWT_TOKEN);
 
-    // console.log("decoded", decoded);
-    // current logged in user
     req.user = await User.findById(decoded.id);
     next();
   } catch (err) {

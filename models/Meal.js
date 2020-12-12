@@ -7,7 +7,7 @@ const MealSchema = Schema(
     name: {
       type: String,
       trim: true,
-      required: [true, "Meals must have a name"],
+      required: [true, "Meal must have a name"],
     },
     cuisineType: {
       type: String,
@@ -24,7 +24,6 @@ const MealSchema = Schema(
     restaurant: {
       type: Schema.Types.ObjectId,
       ref: "restaurant",
-      // required: true,
     },
   },
   { timestamps: true }

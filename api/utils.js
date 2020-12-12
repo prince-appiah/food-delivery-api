@@ -9,7 +9,7 @@ exports.errorHandler = (error) => {
     case 11000:
       return res
         .status(400)
-        .json({ success: false, message: "Cannot create a duplicate key." });
+        .json({ success: false, message: "Resource already exists" });
 
     default:
       return error;

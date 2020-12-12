@@ -38,6 +38,7 @@ exports.createItem = async (res, Model, body) => {
   if (existingItem) {
     return res.status(400).json({
       success: false,
+      // message: "Item already exists",
       message: `${existingItem.name} already exists`,
     });
   }
@@ -50,7 +51,7 @@ exports.createItem = async (res, Model, body) => {
 exports.removeItem = (res, Model, id) => {
   const doc = Model.findByIdAndRemove(id, (err, resp) => {
     if (err) {
-      // console.log("error", err);
+      console.log("error", err);
       return res.status(400).json({ success: false, message: err.message });
     }
     return resp;

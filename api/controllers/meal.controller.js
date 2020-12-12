@@ -39,7 +39,7 @@ exports.index = async (req, res, next) => {
  * @desc    Get single meal by id
  * @access  Public
  * */
-exports.single = async (req, res, next) => {
+exports.single = async (req, res) => {
   try {
     const _id = req.params.mealId;
     const populate = [{ path: "restaurant" }];
@@ -87,6 +87,7 @@ exports.remove = async (req, res, next) => {
   try {
     const _id = req.params.mealId;
     const meal = await removeItem(res, Meal, _id);
+
     console.log("meal deleted ", meal);
     return res
       .status(200)
