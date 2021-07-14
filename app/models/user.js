@@ -19,6 +19,10 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true,
         allowNull: false,
       },
+      avatarUrl: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
       username: {
         type: DataTypes.STRING,
         allowNull: true,
@@ -46,6 +50,7 @@ module.exports = (sequelize, DataTypes) => {
       otp: {
         type: DataTypes.INTEGER,
         allowNull: true,
+        validate: { max: { args: 6, msg: "OTP must be a 6-digit number" } },
       },
     },
     {

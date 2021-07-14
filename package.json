@@ -5,7 +5,10 @@
   "private": true,
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "create:db": "sequelize db:create",
+    "drop:db": "sequelize db:drop",
+    "migrate:db": "sequelize db:migrate"
   },
   "dependencies": {
     "@sentry/node": "^6.9.0",
