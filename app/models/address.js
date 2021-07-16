@@ -13,12 +13,6 @@ module.exports = (sequelize, DataTypes) => {
   }
   Address.init(
     {
-      address_id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-        allowNull: false,
-      },
       city: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -31,9 +25,9 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "Address",
-      tableName: "address",
+      tableName: "addresses",
       timestamps: false,
     }
-  );
+  ).sync();
   return Address;
 };

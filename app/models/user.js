@@ -13,20 +13,10 @@ module.exports = (sequelize, DataTypes) => {
   }
   User.init(
     {
-      user_id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-        allowNull: false,
-      },
-      avatarUrl: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
       username: {
         type: DataTypes.STRING,
-        allowNull: true,
         unique: true,
+        allowNull: true,
       },
       first_name: {
         type: DataTypes.STRING,
@@ -36,31 +26,28 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
+      // role: {
+      //   type: DataTypes.ENUM,
+      //   values: ["customer", "admin"],
+      // },
       email: {
         type: DataTypes.STRING,
-        allowNull: false,
         unique: true,
-        validate: { isEmail: { msg: "Value must be an email address" } },
+        allowNull: false,
       },
       password: {
         type: DataTypes.STRING,
         allowNull: false,
-        validate: { min: 5, max: 32 },
-      },
-      otp: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        validate: { max: { args: 6, msg: "OTP must be a 6-digit number" } },
       },
     },
     {
       sequelize,
       modelName: "User",
-      tableName: "user",
+      tableName: "users",
       timestamps: true,
       createdAt: "created_on",
-      updatedAt: "modified_on",
+      updatedAt: "updated_at",
     }
-  );
+  ).sync();
   return User;
 };

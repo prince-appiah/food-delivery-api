@@ -9,39 +9,32 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      //! must have an address
     }
   }
-
   Restaurant.init(
     {
-      restaurant_id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-        allowNull: false,
-      },
       restaurant_name: {
         type: DataTypes.STRING,
-        allowNull: false,
         unique: true,
+        allowNull: false,
       },
       description: {
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
       },
       image_url: {
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
       },
     },
     {
       sequelize,
       modelName: "Restaurant",
-      tableName: "restaurant",
+      tableName: "restaurants",
       timestamps: true,
       createdAt: "created_on",
+      updatedAt: "updated_at",
     }
-  );
+  ).sync();
   return Restaurant;
 };

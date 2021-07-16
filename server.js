@@ -3,9 +3,10 @@ const connection = require("./db.js");
 const { sequelize } = require("./app/models");
 const Sentry = require("@sentry/node");
 const Tracing = require("@sentry/tracing");
+const db = require("./app/models");
 
-const app = express();
 require("dotenv").config();
+const app = express();
 
 Sentry.init({
   dsn: process.env.DSN,
@@ -46,7 +47,7 @@ app.use(serverConfig);
  * ===================
  */
 const routes = require("./app/routes/root")(app);
-app.use(routes);
+app.use("/api/v1", routes);
 
 //HANDLE 404 requests
 // const notFoundRoute = require("./app/routes/not-found");
@@ -63,8 +64,12 @@ const HOSTNAME = "localhost";
 
 app.listen(PORT, HOSTNAME, async () => {
   try {
-    console.log(`Server running at http://${HOSTNAME}:${PORT}/`);
-    console.log("Database connected.... ");
+    console.log(`Server running at http://${HOSTNAME}:${PORT}`);
+    await connection()
+      .then(() => {
+        console.log("Database connected.... ");
+      })
+      .catch((err) => console.log("error connecting to database:>> ", err));
   } catch (error) {
     // errorHandler(error, res);
     console.log("error connecting to server", error);
