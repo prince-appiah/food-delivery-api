@@ -1,6 +1,7 @@
 const path = require("path");
 const express = require("express");
 const cors = require("cors");
+const logger = require("morgan");
 // const fileupload = require('express-fileupload')
 
 module.exports = () => {
@@ -26,6 +27,7 @@ module.exports = () => {
   };
 
   router.use(cors(corsOptions));
+  router.use(logger("dev"));
 
   router.use((req, res, next) => {
     //allowed headers and responses

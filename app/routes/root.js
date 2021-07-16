@@ -14,5 +14,9 @@ module.exports = (app) => {
   let homeRoutes = require("./home.routes")(app);
   router.use(homeRoutes);
 
+  // User Routes
+  let userRoutes = require("./user.routes")(app);
+  router.use(userRoutes);
+
   return router;
 };
