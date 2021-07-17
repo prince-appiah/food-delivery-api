@@ -22,7 +22,7 @@ async function initializeDB() {
       username: dbConfig.user,
       password: dbConfig.password,
       dialect: "mysql",
-      logging: false,
+      // logging: false,
     });
 
     return { database, connection };

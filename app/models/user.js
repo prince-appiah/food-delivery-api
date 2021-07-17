@@ -17,6 +17,9 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         unique: true,
         allowNull: true,
+        validate: {
+          isLowercase: { msg: "Username must be in lowercase format" },
+        },
       },
       first_name: {
         type: DataTypes.STRING,
